@@ -1,5 +1,7 @@
 # photo-tag
-Photo Tag library for Androidx kotlin
+- Photo Tag library for Androidx kotlin.
+- We can add tags to a photo like Instagram.
+- Tags can be dragged over photo to any position within photo bounds.
 Demo result: 
 -------------
 

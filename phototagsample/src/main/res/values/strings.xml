@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">PhotoTag</string>
+
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+
+    <string name="username">Robert</string>
+    <string name="tag_photo">Tag Photo</string>
+
+    <string name="owner">Robert Hoang</string>
+    <string name="no_posts_yet">No Posts Yet</string>
+    <string name="cancel">@android:string/cancel</string>
+    <string name="search_for_user">Search for user</string>
+    <string name="tap_here_to_choose_a_photo">Tap here to choose a photo</string>
+    <string name="tap_photo_tag_user_drag_to_move_or_tap_to_delete">Tap photo to tag User.\nDrag to move, or tap to delete.</string>
+
+    <string name="tag_show_animation">Tag Show Animation</string>
+    <string name="tag_hide_animation">Tag Hide Animation</string>
+    <string name="apply">Apply</string>
+    <string name="tag_text_color">Tag Text Color</string>
+    <string name="carrot_top_color">Carrot Top Color</string>
+    <string name="ok">Ok</string>
+    <string name="tag_background_color">Tag Background Color</string>
+    <string name="configuration">Configuration</string>
+    <string name="like_color">Like Color</string>
+    <string name="are_you_sure_you_want_to_delete_all_posts">Are you sure you want to remove all tagged posts ?</string>
+    <string name="remove_all_tagged_posts">Remove all tagged posts</string>
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--Photo 1-->
+    <item android:drawable="@drawable/ic_launcher" />
+    <!--Photo 2-->
+    <item>
+        <rotate
+            android:drawable="@drawable/ic_launcher"
+            android:fromDegrees="270"
+            android:toDegrees="90" />
+    </item>
+    <!--Photo 3-->
+    <item>
+        <rotate
+            android:drawable="@drawable/ic_launcher"
+            android:fromDegrees="90"
+            android:toDegrees="180" />
+    </item>
+    <!--Photo 4-->
+    <item>
+        <rotate
+            android:drawable="@drawable/ic_launcher"
+            android:fromDegrees="180"
+            android:toDegrees="90" />
+    </item>
+
+    <!--Tag 1-->
+    <item
+        android:bottom="28dp"
+        android:left="28dp">
+        <rotate
+            android:drawable="@drawable/ic_tag"
+            android:fromDegrees="270"
+            android:toDegrees="90" />
+    </item>
+    <!--Tag 2-->
+    <item
+        android:bottom="28dp"
+        android:right="28dp">
+        <rotate
+            android:drawable="@drawable/ic_tag"
+            android:fromDegrees="180"
+            android:toDegrees="90" />
+    </item>
+    <!--Tag 3-->
+    <item
+        android:right="28dp"
+        android:top="28dp">
+        <rotate
+            android:drawable="@drawable/ic_tag"
+            android:fromDegrees="90"
+            android:toDegrees="180" />
+    </item>
+    <!--Tag 4-->
+    <item
+        android:drawable="@drawable/ic_tag"
+        android:left="28dp"
+        android:top="28dp" />
+
+
+</layer-list>

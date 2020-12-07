@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PhotoTag">
+        <attr name="canWeAddTags" format="boolean" />
+        <!--Used for restricting tag movement when we are not tagging photos.
+        (For example we are using PhotoTag inside RecyclerView we have to provide false -->
+        <attr name="overrideDefaultColor" format="color" />
+        <!--Used to change Default Color being used for Tag Background & Tag Top Carrot-->
+        <attr name="instaTextColor" format="color" />
+        <!--Used for changing Tag text Color-->
+        <attr name="instaBackgroundColor" format="color" />
+        <!--Used for changing background color for Tag background-->
+        <attr name="carrotTopColor" format="color" />
+        <!--Used for changing Top Carrot color-->
+        <attr name="tagTextBackground" format="reference" />
+        <!--Used for changing tag background with custom background -->
+        <attr name="carrotTopBackground" format="reference" />
+        <!--Used for replacing top carrot background with custom background-->
+        <attr name="hideAnimation" format="reference" />
+        <!--Used for animating tag while hiding-->
+        <attr name="showAnimation" format="reference" />
+        <!--Used for animating tag while showing-->
+        <attr name="likeColor" format="color" />
+        <!--Used for setting like color-->
+        <attr name="likeSize" format="dimension" />
+        <!--Used for setting like size-->
+        <attr name="likeSrc" format="reference" />
+        <!--Used for setting source for like-->
+    </declare-styleable>
+</resources>

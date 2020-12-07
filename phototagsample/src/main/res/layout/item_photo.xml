@@ -1,0 +1,41 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout_tagged_photo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.robert.phototag.PhotoTag
+        android:id="@+id/tag_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:canWeAddTags="false"
+        app:hideAnimation="@anim/zoom_out"
+        app:instaTextColor="@android:color/white"
+        app:likeColor="@android:color/white"
+        app:likeSize="@dimen/dp150"
+        app:overrideDefaultColor="@color/colorPhotoTag"
+        app:showAnimation="@anim/zoom_in" />
+
+
+    <ImageView
+        android:id="@+id/tag_indicator"
+        android:layout_width="@dimen/dp50"
+        android:layout_height="@dimen/dp50"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="@dimen/dp25"
+        android:background="@drawable/ic_tag_badge"
+        android:scaleType="fitXY"
+        tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/tag_heart"
+        android:layout_width="@dimen/dp50"
+        android:layout_height="@dimen/dp50"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/dp25"
+        android:background="@drawable/ic_like"
+        android:scaleType="fitXY"
+        tools:ignore="ContentDescription" />
+
+</FrameLayout>

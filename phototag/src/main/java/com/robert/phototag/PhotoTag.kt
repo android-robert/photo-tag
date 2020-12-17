@@ -272,13 +272,8 @@ class PhotoTag: RelativeLayout {
             }
             tagTextView.text = tagText
             setColorForTag(tagView)
-            val layoutParams = LayoutParams(
-                    LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT)
-            layoutParams.setMargins(x - tagTextView.length() * 8,
-                    y - tagTextView.length() * 2,
-                    0,
-                    0)
+            val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            layoutParams.setMargins(x - tagTextView.length() * 8, y - tagTextView.length() * 2, 0, 0)
             tagView.layoutParams = layoutParams
             mTagList.add(tagView)
             mRoot!!.addView(tagView)
@@ -387,22 +382,17 @@ class PhotoTag: RelativeLayout {
         mLikeImage!!.scaleY = 0f
         mLikeImage!!.scaleX = 0f
         val animatorSet = AnimatorSet()
-        val likeScaleUpYAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, SCALE_Y, 0f, 1f)
+        val likeScaleUpYAnimator = ObjectAnimator.ofFloat(mLikeImage, SCALE_Y, 0f, 1f)
         likeScaleUpYAnimator.duration = 400
         likeScaleUpYAnimator.interpolator = OvershootInterpolator()
-        val likeScaleUpXAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, SCALE_X, 0f, 1f)
+        val likeScaleUpXAnimator = ObjectAnimator.ofFloat(mLikeImage, SCALE_X, 0f, 1f)
         likeScaleUpXAnimator.duration = 400
         likeScaleUpXAnimator.interpolator = OvershootInterpolator()
-        val likeScaleDownYAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, SCALE_Y, 1f, 0f)
+        val likeScaleDownYAnimator = ObjectAnimator.ofFloat(mLikeImage, SCALE_Y, 1f, 0f)
         likeScaleDownYAnimator.duration = 100
-        val likeScaleDownXAnimator = ObjectAnimator
-                .ofFloat(mLikeImage, SCALE_X, 1f, 0f)
+        val likeScaleDownXAnimator = ObjectAnimator.ofFloat(mLikeImage, SCALE_X, 1f, 0f)
         likeScaleDownXAnimator.duration = 100
-        animatorSet.playTogether(likeScaleUpXAnimator,
-                likeScaleUpYAnimator)
+        animatorSet.playTogether(likeScaleUpXAnimator, likeScaleUpYAnimator)
         animatorSet.play(likeScaleDownXAnimator).with(likeScaleDownYAnimator).after(800)
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {

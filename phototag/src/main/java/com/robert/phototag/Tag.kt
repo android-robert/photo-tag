@@ -8,8 +8,8 @@ class Tag : Parcelable {
     var x: Float
     var y: Float
 
-    constructor(unique_tag_id: String?, x: Float, y: Float) {
-        this.tagId = unique_tag_id
+    constructor(tagId: String?, x: Float, y: Float) {
+        this.tagId = tagId
         this.x = x
         this.y = y
     }

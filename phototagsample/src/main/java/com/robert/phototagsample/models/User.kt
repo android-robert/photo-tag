@@ -27,21 +27,19 @@ class User : Parcelable {
         dest.writeString(url)
     }
 
-    private constructor(`in`: Parcel) {
-        userName = `in`.readString()
-        fullName = `in`.readString()
-        url = `in`.readString()
+    private constructor(parcel: Parcel) {
+        userName = parcel.readString()
+        fullName = parcel.readString()
+        url = parcel.readString()
     }
 
-    companion object {
-        val CREATOR: Parcelable.Creator<User> = object : Parcelable.Creator<User> {
-            override fun createFromParcel(source: Parcel): User {
-                return User(source)
-            }
+    companion object CREATOR: Parcelable.Creator<User> {
+        override fun createFromParcel(source: Parcel): User {
+            return User(source)
+        }
 
-            override fun newArray(size: Int): Array<User?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<User?> {
+            return arrayOfNulls(size)
         }
     }
 }

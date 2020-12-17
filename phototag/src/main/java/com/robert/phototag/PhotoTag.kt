@@ -314,8 +314,8 @@ class PhotoTag: RelativeLayout {
 
     private fun addTag(tag: Tag) {
         val layoutInflater = LayoutInflater.from(mContext)
-        val x = getXCoOrdForTag(tag.x_co_ord)
-        val y = getYCoOrdForTag(tag.y_co_ord)
+        val x = getX(tag.x)
+        val y = getY(tag.y)
         val tagView = layoutInflater.inflate(R.layout.view_for_tag, mRoot, false)
         val tagTextView = tagView.findViewById<TextView>(R.id.tag_text_view)
         val carrotTopContainer = tagView.findViewById<LinearLayout>(R.id.carrot_top)
@@ -326,7 +326,7 @@ class PhotoTag: RelativeLayout {
         if (carrotTopDrawable != null) {
             ViewCompat.setBackground(carrotTopContainer, carrotTopDrawable)
         }
-        tagTextView.text = tag.unique_tag_id
+        tagTextView.text = tag.tagId
         setColorForTag(tagView)
         tagView.x = x
         tagView.y = y
@@ -413,11 +413,11 @@ class PhotoTag: RelativeLayout {
         animatorSet.start()
     }
 
-    private fun getXCoOrdForTag(x: Float): Float {
+    private fun getX(x: Float): Float {
         return rootWidth * x / 100
     }
 
-    private fun getYCoOrdForTag(y: Float): Float {
+    private fun getY(y: Float): Float {
         return rootHeight * y / 100
     }
 

@@ -21,20 +21,18 @@ class Asset : Parcelable {
         dest.writeInt(id)
     }
 
-    protected constructor(`in`: Parcel) {
-        name = `in`.readString()
-        id = `in`.readInt()
+    private constructor(parcel: Parcel) {
+        name = parcel.readString()
+        id = parcel.readInt()
     }
 
-    companion object {
-        val CREATOR: Parcelable.Creator<Asset> = object : Parcelable.Creator<Asset> {
-            override fun createFromParcel(source: Parcel): Asset {
-                return Asset(source)
-            }
+    companion object CREATOR: Parcelable.Creator<Asset> {
+        override fun createFromParcel(source: Parcel): Asset {
+            return Asset(source)
+        }
 
-            override fun newArray(size: Int): Array<Asset?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<Asset?> {
+            return arrayOfNulls(size)
         }
     }
 }

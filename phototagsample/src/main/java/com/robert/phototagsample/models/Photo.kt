@@ -27,21 +27,20 @@ class Photo : Parcelable {
         dest.writeTypedList(tags)
     }
 
-    private constructor(`in`: Parcel) {
-        id = `in`.readString()
-        imageUri = `in`.readString()
-        tags = `in`.createTypedArrayList(Tag.CREATOR)
+    private constructor(parcel: Parcel) {
+        id = parcel.readString()
+        imageUri = parcel.readString()
+        tags = parcel.createTypedArrayList(Tag.CREATOR)
     }
 
-    companion object {
-        val CREATOR: Parcelable.Creator<Photo> = object : Parcelable.Creator<Photo> {
-            override fun createFromParcel(source: Parcel): Photo {
-                return Photo(source)
-            }
 
-            override fun newArray(size: Int): Array<Photo?> {
-                return arrayOfNulls(size)
-            }
+    companion object CREATOR : Parcelable.Creator<Photo> {
+        override fun createFromParcel(parcel: Parcel): Photo {
+            return Photo(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Photo?> {
+            return arrayOfNulls(size)
         }
     }
 }

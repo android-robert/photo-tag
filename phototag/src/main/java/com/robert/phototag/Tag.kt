@@ -4,14 +4,14 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class Tag : Parcelable {
-    var unique_tag_id: String?
-    var x_co_ord: Float
-    var y_co_ord: Float
+    var tagId: String?
+    var x: Float
+    var y: Float
 
-    constructor(unique_tag_id: String?, x_co_ord: Float, y_co_ord: Float) {
-        this.unique_tag_id = unique_tag_id
-        this.x_co_ord = x_co_ord
-        this.y_co_ord = y_co_ord
+    constructor(unique_tag_id: String?, x: Float, y: Float) {
+        this.tagId = unique_tag_id
+        this.x = x
+        this.y = y
     }
 
     override fun describeContents(): Int {
@@ -19,27 +19,24 @@ class Tag : Parcelable {
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(unique_tag_id)
-        dest.writeValue(x_co_ord)
-        dest.writeValue(y_co_ord)
+        dest.writeString(tagId)
+        dest.writeValue(x)
+        dest.writeValue(y)
     }
 
-    private constructor(`in`: Parcel) {
-        unique_tag_id = `in`.readString()
-        x_co_ord = `in`.readValue(Float::class.javaPrimitiveType!!.classLoader) as Float
-        y_co_ord = `in`.readValue(Float::class.javaPrimitiveType!!.classLoader) as Float
+    private constructor(parcel: Parcel) {
+        tagId = parcel.readString()
+        x = parcel.readValue(Float::class.javaPrimitiveType!!.classLoader) as Float
+        y = parcel.readValue(Float::class.javaPrimitiveType!!.classLoader) as Float
     }
 
-    companion object {
-        @JvmField
-        val CREATOR: Parcelable.Creator<Tag> = object : Parcelable.Creator<Tag> {
-            override fun createFromParcel(source: Parcel): Tag {
-                return Tag(source)
-            }
+    companion object CREATOR: Parcelable.Creator<Tag> {
+        override fun createFromParcel(parcel: Parcel): Tag {
+            return Tag(parcel)
+        }
 
-            override fun newArray(size: Int): Array<Tag?> {
-                return arrayOfNulls(size)
-            }
+        override fun newArray(size: Int): Array<Tag?> {
+            return arrayOfNulls(size)
         }
     }
 }

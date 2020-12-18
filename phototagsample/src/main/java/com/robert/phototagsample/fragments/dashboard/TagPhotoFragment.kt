@@ -6,12 +6,15 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
@@ -41,9 +44,12 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, AppConstants {
+    private val TAG = "TagPhotoFragment"
     private var photoTag: PhotoTag? = null
-    private var photos: Photo? = null
+    private var photo: Photo? = null
     private var tagsShowHideHelper = HashSet<String?>()
+    private var tagShowAnimation: Animation? = null
+    private var tagHideAnimation: Animation? = null
 
     private var photoToBeTaggedURI: Uri? = null
     private var recyclerViewUsers: RecyclerView? = null
@@ -67,6 +73,8 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
+        tagShowAnimation = AnimationUtils.loadAnimation(context, PhotoTagApplication.instance!!.tagShowAnimation)
+        tagHideAnimation = AnimationUtils.loadAnimation(context, PhotoTagApplication.instance!!.tagHideAnimation)
     }
 
     override fun onDestroy() {
@@ -91,7 +99,9 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
         headerSearchUsers = rootView.findViewById(R.id.header_search_someone)
         searchForUser = rootView.findViewById(R.id.search_for_a_person)
         searchForUser!!.addTextChangedListener(textWatcher)
+
         tapPhotoToTagUser!!.setOnClickListener(this)
+        tagIndicator!!.setOnClickListener(this)
         cancelTextView.setOnClickListener(this)
         doneImageView.setOnClickListener(this)
         backImageView.setOnClickListener(this)
@@ -100,6 +110,17 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
         recyclerViewUsers!!.adapter = userAdapter
         recyclerViewUsers!!.layoutManager = LinearLayoutManager(activity)
         return rootView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        if (tagShowAnimation != null) {
+            photoTag!!.setTagShowAnimation(tagShowAnimation)
+        }
+        if (tagHideAnimation != null) {
+            photoTag!!.setTagHideAnimation(tagHideAnimation)
+        }
     }
 
     private fun loadImage() {
@@ -115,10 +136,22 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun addTagViewFromTags(photos: Photo? = null) {
-        this.photos = photos
-        photos!!.tags?.let {
+    fun addTagViewFromTags(photo: Photo? = null) {
+        reset()
+        tapPhotoToTagUser!!.text = getString(R.string.tap_photo_tag_user_drag_to_move_or_tap_to_delete)
+        this.photo = photo
+        photo?: kotlin.run {
+            return
+        }
+        photo.imageUri?.let {
+            photoToBeTaggedURI = Uri.parse(it)
+            loadImage()
+        }
+
+        photo.tags?.let {
             photoTag!!.addTagViewFromTags(it)
+            photoTag!!.showTags()
+            tagsShowHideHelper.add(photo.id)
             if (it.isNotEmpty()) {
                 tagIndicator!!.visibility = View.VISIBLE
             }
@@ -147,24 +180,21 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
                 headerUsers!!.visibility = View.VISIBLE
             }
             R.id.tag_indicator -> {
-                if (!tagsShowHideHelper.contains(photos!!.id)) {
-                    Log.e("TagPhotoFragment", "--->showTags()")
+                if (!tagsShowHideHelper.contains(photo!!.id)) {
+                    Log.e(TAG, "--->showTags()")
                     photoTag!!.showTags()
-                    tagsShowHideHelper.add(photos!!.id)
+                    tagsShowHideHelper.add(photo!!.id)
                 } else {
-                    Log.e("TagPhotoFragment","--->hideTags()")
+                    Log.e(TAG,"--->hideTags()")
                     photoTag!!.hideTags()
-                    tagsShowHideHelper.remove(photos!!.id)
+                    tagsShowHideHelper.remove(photo!!.id)
                 }
             }
             R.id.done -> if (photoToBeTaggedURI != null) {
                 if (photoTag!!.tags.isEmpty()) {
                     Toast.makeText(activity, ToastText.TAG_ONE_USER_AT_LEAST, Toast.LENGTH_SHORT).show()
                 } else {
-                    val photoArrayList: ArrayList<Photo> = PhotoTagApplication.instance!!.photos
-                    val photo = Photo(Calendar.getInstance().timeInMillis.toString() + "", photoToBeTaggedURI.toString(), photoTag!!.tags)
-                    photoArrayList.add(photo)
-                    PhotoTagApplication.instance!!.savePhotos(photoArrayList)
+                    updateTags()
                     (parentFragment as ViewPagerFragmentForDashBoard?)!!.setHomeAsSelectedTab()
                     reset()
                     val intentNewPhotoIsTagged = Intent(AppConstants.Events.NEW_PHOTO_IS_TAGGED)
@@ -183,6 +213,37 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
                 startActivityForResult(photoToBeTagged, AppConstants.CHOOSE_A_PHOTO_TO_BE_TAGGED)
             }
         }
+    }
+
+    private fun updateTags() {
+        val photoArrayList: ArrayList<Photo> = PhotoTagApplication.instance!!.photos
+        val position = exists(photoArrayList, photo)
+        if (position > -1) {
+            photo!!.tags = photoTag!!.tags
+            photoArrayList[position] = photo!!
+        } else {
+            photo = Photo(Calendar.getInstance().timeInMillis.toString() + "", photoToBeTaggedURI.toString(), photoTag!!.tags)
+            photoArrayList.add(photo!!)
+        }
+        PhotoTagApplication.instance!!.savePhotos(photoArrayList)
+    }
+
+    private fun exists(photoArrayList: ArrayList<Photo>?, photo: Photo?): Int {
+        photo?: kotlin.run {
+            return -1
+        }
+        photoArrayList?: kotlin.run {
+            return -1
+        }
+        if (photoArrayList.isEmpty()) {
+            return -1
+        }
+        photoArrayList.forEachIndexed { position, item ->
+            if (item.id == photo.id) {
+                return position
+            }
+        }
+        return -1
     }
 
     private val photoEvent: PhotoEvent = object : PhotoEvent {
@@ -234,7 +295,9 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
     }
 
     private fun reset() {
+        photo = null
         photoToBeTaggedURI = null
+        tagsShowHideHelper.clear()
         loadImage()
         photoTag!!.removeTags()
         tapPhotoToTagUser!!.text = getString(R.string.tap_here_to_choose_a_photo)

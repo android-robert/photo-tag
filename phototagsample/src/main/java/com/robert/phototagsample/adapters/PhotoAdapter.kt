@@ -1,6 +1,5 @@
 package com.robert.phototagsample.adapters
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -126,7 +125,10 @@ class PhotoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         val tagIndicator: ImageView = view.findViewById(R.id.tag_indicator)
 
         private val photoEvent: PhotoEvent = object : PhotoEvent {
-            override fun singleTapConfirmedAndRootIsInTouch(x: Int, y: Int) {}
+            override fun singleTapConfirmedAndRootIsInTouch(x: Int, y: Int) {
+                val photo = photos[adapterPosition]
+                photoClickListener.onPhotoClick(photo, adapterPosition)
+            }
             override fun onDoubleTap(e: MotionEvent?): Boolean {
                 photoTag.animateLike()
                 return true
@@ -144,10 +146,8 @@ class PhotoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         override fun onClick(view: View) {
             val photo = photos[adapterPosition]
-            Log.e("PhotoAdapter","view.id=${view.id},R.id.tag_photo=${R.id.tag_photo}")
             when (view.id) {
                 R.id.tag_photo -> {
-                    Log.e("PhotoAdapter","onPhotoClick.....")
                     photoClickListener.onPhotoClick(photo, adapterPosition)
                 }
                 R.id.tag_heart -> photoTag.animateLike()

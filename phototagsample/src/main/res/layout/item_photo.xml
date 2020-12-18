@@ -9,7 +9,7 @@
         android:id="@+id/tag_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:canWeAddTags="false"
+        app:canWeAddTags="true"
         app:hideAnimation="@anim/zoom_out"
         app:instaTextColor="@android:color/white"
         app:likeColor="@android:color/white"

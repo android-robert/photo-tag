@@ -10,6 +10,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.*
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.View.OnTouchListener
@@ -299,6 +300,7 @@ class PhotoTag: RelativeLayout {
     }
 
     fun addTagViewFromTags(tags: ArrayList<Tag>) {
+        Log.e("PhotoTag","addTagViewFromTags.tagsAreAdded=${tagsAreAdded}")
         if (!tagsAreAdded) {
             for (tag in tags) {
                 addTag(tag)
@@ -347,10 +349,13 @@ class PhotoTag: RelativeLayout {
 
     fun showTags() {
         if (mTagList.isNotEmpty()) {
+            Log.e("PhotoTag","mTagList.size=${mTagList.size}")
             for (tagView in mTagList) {
                 tagView.visibility = VISIBLE
                 tagView.startAnimation(mShowAnimation)
             }
+        } else {
+            Log.e("PhotoTag","mTagList.isEmpty....")
         }
     }
 
@@ -370,6 +375,7 @@ class PhotoTag: RelativeLayout {
             }
             mTagList.clear()
         }
+        tagsAreAdded = false
     }
 
     fun animateLike() {

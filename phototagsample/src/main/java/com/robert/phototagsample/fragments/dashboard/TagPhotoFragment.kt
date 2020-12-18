@@ -7,14 +7,13 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +24,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.robert.phototag.PhotoTag
 import com.robert.phototag.PhotoTag.PhotoEvent
 import com.robert.phototag.SquareImageView
+import com.robert.phototag.Tag
 import com.robert.phototagsample.PhotoTagApplication
 import com.robert.phototagsample.R
 import com.robert.phototagsample.adapters.UserAdapter
@@ -35,15 +35,23 @@ import com.robert.phototagsample.models.Photo
 import com.robert.phototagsample.models.User
 import com.robert.phototagsample.utilities.KeyBoardUtil
 import com.robert.phototagsample.utilities.UsersData
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 
 class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, AppConstants {
     private var photoTag: PhotoTag? = null
+    private var photos: Photo? = null
+    private var tagsShowHideHelper = HashSet<String?>()
+
     private var photoToBeTaggedURI: Uri? = null
     private var recyclerViewUsers: RecyclerView? = null
     private var headerUsers: LinearLayout? = null
     private var headerSearchUsers: LinearLayout? = null
     private var tapPhotoToTagUser: TextView? = null
+    private var tagIndicator: AppCompatImageView? = null
+
     private var addTagInX = 0
     private var addTagInY = 0
     private var searchForUser: EditText? = null
@@ -58,6 +66,12 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -67,6 +81,10 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
         val cancelTextView = rootView.findViewById<TextView>(R.id.cancel)
         val doneImageView: SquareImageView = rootView.findViewById(R.id.done)
         val backImageView: SquareImageView = rootView.findViewById(R.id.get_back)
+
+        tagIndicator = rootView.findViewById(R.id.tag_indicator)
+        tagIndicator!!.visibility = View.GONE
+
         recyclerViewUsers = rootView.findViewById(R.id.rv_some_one_to_be_tagged)
         tapPhotoToTagUser = rootView.findViewById(R.id.tap_photo_to_tag_someone)
         headerUsers = rootView.findViewById(R.id.header_tag_photo)
@@ -92,6 +110,21 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
                 .into(photoTag!!.tagImageView!!)
     }
 
+    private fun addTagViewFromTags(tags: ArrayList<Tag>) {
+        photoTag!!.addTagViewFromTags(tags)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun addTagViewFromTags(photos: Photo? = null) {
+        this.photos = photos
+        photos!!.tags?.let {
+            photoTag!!.addTagViewFromTags(it)
+            if (it.isNotEmpty()) {
+                tagIndicator!!.visibility = View.VISIBLE
+            }
+        }
+    }
+
     override fun onUserClick(user: User?, position: Int) {
         activity!!.runOnUiThread {
             KeyBoardUtil.hideKeyboard(activity)
@@ -113,21 +146,29 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
                 headerSearchUsers!!.visibility = View.GONE
                 headerUsers!!.visibility = View.VISIBLE
             }
+            R.id.tag_indicator -> {
+                if (!tagsShowHideHelper.contains(photos!!.id)) {
+                    Log.e("TagPhotoFragment", "--->showTags()")
+                    photoTag!!.showTags()
+                    tagsShowHideHelper.add(photos!!.id)
+                } else {
+                    Log.e("TagPhotoFragment","--->hideTags()")
+                    photoTag!!.hideTags()
+                    tagsShowHideHelper.remove(photos!!.id)
+                }
+            }
             R.id.done -> if (photoToBeTaggedURI != null) {
                 if (photoTag!!.tags.isEmpty()) {
                     Toast.makeText(activity, ToastText.TAG_ONE_USER_AT_LEAST, Toast.LENGTH_SHORT).show()
                 } else {
                     val photoArrayList: ArrayList<Photo> = PhotoTagApplication.instance!!.photos
-                    val photo = Photo(Calendar.getInstance().timeInMillis.toString() + "",
-                            photoToBeTaggedURI.toString(),
-                            photoTag!!.tags)
+                    val photo = Photo(Calendar.getInstance().timeInMillis.toString() + "", photoToBeTaggedURI.toString(), photoTag!!.tags)
                     photoArrayList.add(photo)
                     PhotoTagApplication.instance!!.savePhotos(photoArrayList)
                     (parentFragment as ViewPagerFragmentForDashBoard?)!!.setHomeAsSelectedTab()
                     reset()
                     val intentNewPhotoIsTagged = Intent(AppConstants.Events.NEW_PHOTO_IS_TAGGED)
-                    LocalBroadcastManager.getInstance(activity!!)
-                            .sendBroadcast(intentNewPhotoIsTagged)
+                    LocalBroadcastManager.getInstance(activity!!).sendBroadcast(intentNewPhotoIsTagged)
                 }
             } else {
                 Toast.makeText(activity, ToastText.CHOOSE_A_PHOTO, Toast.LENGTH_SHORT).show()

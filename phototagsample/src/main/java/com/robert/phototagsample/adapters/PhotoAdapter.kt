@@ -3,6 +3,7 @@ package com.robert.phototagsample.adapters
 import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -141,18 +142,23 @@ class PhotoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
         }
 
-        @SuppressLint("NonConstantResourceId")
         override fun onClick(view: View) {
             val photo = photos[adapterPosition]
+            Log.e("PhotoAdapter","view.id=${view.id},R.id.tag_photo=${R.id.tag_photo}")
             when (view.id) {
-                R.id.tag_photo -> photoClickListener.onPhotoClick(photo, adapterPosition)
+                R.id.tag_photo -> {
+                    Log.e("PhotoAdapter","onPhotoClick.....")
+                    photoClickListener.onPhotoClick(photo, adapterPosition)
+                }
                 R.id.tag_heart -> photoTag.animateLike()
-                R.id.tag_indicator -> if (!tagsShowHideHelper.contains(photo.id)) {
-                    photoTag.showTags()
-                    tagsShowHideHelper.add(photo.id)
-                } else {
-                    photoTag.hideTags()
-                    tagsShowHideHelper.remove(photo.id)
+                R.id.tag_indicator -> {
+                    if (!tagsShowHideHelper.contains(photo.id)) {
+                        photoTag.showTags()
+                        tagsShowHideHelper.add(photo.id)
+                    } else {
+                        photoTag.hideTags()
+                        tagsShowHideHelper.remove(photo.id)
+                    }
                 }
             }
         }
@@ -160,6 +166,7 @@ class PhotoAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder> {
         init {
             tagHeart.setOnClickListener(this)
             tagIndicator.setOnClickListener(this)
+            photoTag.setOnClickListener(this)
             photoTag.setTaggedPhotoEvent(photoEvent)
         }
     }

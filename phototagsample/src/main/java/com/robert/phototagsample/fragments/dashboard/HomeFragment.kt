@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.*
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import com.robert.phototagsample.interfaces.AppConstants.ProgressText
 import com.robert.phototagsample.interfaces.AppConstants.ToastText
 import com.robert.phototagsample.interfaces.PhotoClickListener
 import com.robert.phototagsample.models.Photo
+import org.greenrobot.eventbus.EventBus
 import java.util.*
 
 class HomeFragment : Fragment(), PhotoClickListener, AppConstants, View.OnClickListener {
@@ -58,7 +60,12 @@ class HomeFragment : Fragment(), PhotoClickListener, AppConstants, View.OnClickL
         return rootView
     }
 
-    override fun onPhotoClick(photo: Photo?, position: Int) {}
+    override fun onPhotoClick(photo: Photo?, position: Int) {
+        Log.e("HomeFragment","onPhotoClick.....")
+        (parentFragment as ViewPagerFragmentForDashBoard?)!!.setSelectedTab( R.id.tab_tag_photo)
+        EventBus.getDefault().post(photo)
+    }
+
     override fun onResume() {
         super.onResume()
         LocalBroadcastManager.getInstance(activity!!).registerReceiver(newPhotoIsTagged,

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.robert.phototagsample.R
@@ -54,6 +55,10 @@ class ViewPagerFragmentForDashBoard : Fragment() {
 
     fun setHomeAsSelectedTab() {
         dashBoardFragment!!.setHomeAsSelectedTab()
+    }
+
+    fun setSelectedTab(@IdRes itemId: Int) {
+        dashBoardFragment!!.setSelectedTab(itemId)
     }
 
     companion object {

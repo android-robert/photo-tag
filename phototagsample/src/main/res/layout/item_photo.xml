@@ -18,7 +18,7 @@
         app:showAnimation="@anim/zoom_in" />
 
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/tag_indicator"
         android:layout_width="@dimen/dp50"
         android:layout_height="@dimen/dp50"
@@ -28,7 +28,7 @@
         android:scaleType="fitXY"
         tools:ignore="ContentDescription" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/tag_heart"
         android:layout_width="@dimen/dp50"
         android:layout_height="@dimen/dp50"

@@ -161,6 +161,7 @@ class TagPhotoFragment : Fragment(), UserClickListener, View.OnClickListener, Ap
     override fun onUserClick(user: User?, position: Int) {
         activity!!.runOnUiThread {
             KeyBoardUtil.hideKeyboard(activity)
+            Log.w(TAG, "===>Tag info(x,y,user)=photoTag!!.addTag(${addTagInX},${addTagInY},\"${user!!.userName!!}\")")
             photoTag!!.addTag(addTagInX, addTagInY, user!!.userName!!)
             recyclerViewUsers!!.visibility = View.GONE
             tapPhotoToTagUser!!.visibility = View.VISIBLE

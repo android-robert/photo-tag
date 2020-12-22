@@ -19,6 +19,7 @@ import com.robert.phototag.SquareImageView
 import com.robert.phototagsample.PhotoTagApplication
 import com.robert.phototagsample.R
 import com.robert.phototagsample.activities.DashBoardActivity
+import com.robert.phototagsample.activities.TagPhotoActivity
 import com.robert.phototagsample.adapters.PhotoAdapter
 import com.robert.phototagsample.interfaces.AppConstants
 import com.robert.phototagsample.interfaces.AppConstants.ProgressText
@@ -62,8 +63,11 @@ class HomeFragment : Fragment(), PhotoClickListener, AppConstants, View.OnClickL
 
     override fun onPhotoClick(photo: Photo?, position: Int) {
         Log.e("HomeFragment","onPhotoClick.....")
-        (parentFragment as ViewPagerFragmentForDashBoard?)!!.setSelectedTab( R.id.tab_tag_photo)
-        EventBus.getDefault().post(photo)
+        //(parentFragment as ViewPagerFragmentForDashBoard?)!!.setSelectedTab( R.id.tab_tag_photo)
+        //EventBus.getDefault().post(photo)
+        view?.let {
+            startActivity(TagPhotoActivity.launch(it.context, photo, position))
+        }
     }
 
     override fun onResume() {

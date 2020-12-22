@@ -311,8 +311,6 @@ class PhotoTag: RelativeLayout {
 
     private fun addTag(tag: Tag) {
         val layoutInflater = LayoutInflater.from(mContext)
-        val x = getX(tag.x)
-        val y = getY(tag.y)
         val tagView = layoutInflater.inflate(R.layout.view_for_tag, mRoot, false)
         val tagTextView = tagView.findViewById<TextView>(R.id.tag_text_view)
         val carrotTopContainer = tagView.findViewById<LinearLayout>(R.id.carrot_top)
@@ -325,8 +323,8 @@ class PhotoTag: RelativeLayout {
         }
         tagTextView.text = tag.tagId
         setColorForTag(tagView)
-        tagView.x = x
-        tagView.y = y
+        tagView.x = tag.x
+        tagView.y = tag.y
         mTagList.add(tagView)
         mRoot!!.addView(tagView)
     }
@@ -337,11 +335,7 @@ class PhotoTag: RelativeLayout {
             if (mTagList.isNotEmpty()) {
                 for (i in mTagList.indices) {
                     val view = mTagList[i]
-                    var x = view.x
-                    x = x / rootWidth * 100
-                    var y = view.y
-                    y = y / rootHeight * 100
-                    tags.add(Tag((view.findViewById<View>(R.id.tag_text_view) as TextView).text.toString(), x, y))
+                    tags.add(Tag((view.findViewById<View>(R.id.tag_text_view) as TextView).text.toString(), view.x, view.y))
                 }
             }
             return tags

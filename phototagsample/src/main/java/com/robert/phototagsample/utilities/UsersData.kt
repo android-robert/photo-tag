@@ -8,13 +8,13 @@ import java.util.*
 
 object UsersData: AppConstants {
 
-    val users = ArrayList<User?>()
+    val users = ArrayList<User>()
 
-    fun getFilteredUsers(searchString: String?): ArrayList<User?> {
-        val filteredUser = ArrayList<User?>()
+    fun getFilteredUsers(searchString: String?): ArrayList<User> {
+        val filteredUser = ArrayList<User>()
         for (user in users) {
             searchString?.let {  searchStr ->
-                if (user!!.fullName!!.contains(searchStr) ||  user.fullName!!.contains(searchStr)) {
+                if (user.fullName!!.contains(searchStr) ||  user.fullName!!.contains(searchStr)) {
                     filteredUser.add(user)
                 }
             }
@@ -27,7 +27,7 @@ object UsersData: AppConstants {
 
     fun getUsersFromJson(json: String?): ArrayList<User> {
         return if (json != "") {
-            Gson().fromJson(json, object : TypeToken<ArrayList<User?>?>() {}.type)
+            Gson().fromJson(json, object : TypeToken<ArrayList<User>?>() {}.type)
         } else {
             ArrayList()
         }

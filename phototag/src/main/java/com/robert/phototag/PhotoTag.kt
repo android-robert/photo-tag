@@ -263,7 +263,6 @@ class PhotoTag: RelativeLayout {
             val tagView = layoutInflater.inflate(R.layout.view_for_tag, mRoot, false)
             val tagTextView = tagView.findViewById<TextView>(R.id.tag_text_view)
             val carrotTopContainer = tagView.findViewById<LinearLayout>(R.id.carrot_top)
-            val removeTagImageView = tagView.findViewById<ImageView>(R.id.remove_tag_image_view)
             val textContainer = tagView.findViewById<LinearLayout>(R.id.tag_text_container)
             if (tagTextDrawable != null) {
                 ViewCompat.setBackground(textContainer, tagTextDrawable)
@@ -278,38 +277,24 @@ class PhotoTag: RelativeLayout {
             tagView.layoutParams = layoutParams
             mTagList.add(tagView)
             mRoot!!.addView(tagView)
-            removeTagImageView.setOnClickListener {
-                mTagList.remove(tagView)
-                mRoot!!.removeView(tagView)
-            }
-            val tagOnTouchListener = TagOnTouchListener(tagView)
-            tagOnTouchListener.setOnDragActionListener(object : OnDragActionListener {
-                override fun onDragStart(view: View?) {
-                    if (canWeAddTags) {
-                        mIsRootIsInTouch = false
-                        removeTagImageView.visibility = VISIBLE
-                    }
-                }
 
-                override fun onDragEnd(view: View?) {}
-            })
-            if (canWeAddTags) tagView.setOnTouchListener(tagOnTouchListener)
+            addRemoveTagListener(tagView)
         } else {
             Toast.makeText(mContext, "This user is already tagged", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun addTagViewFromTags(tags: ArrayList<Tag>) {
+    fun addTagViewFromTags(tags: ArrayList<Tag>, allowRemoveTag: Boolean = false) {
         Log.e("PhotoTag","addTagViewFromTags.tagsAreAdded=${tagsAreAdded}")
         if (!tagsAreAdded) {
             for (tag in tags) {
-                addTag(tag)
+                addTag(tag, allowRemoveTag)
             }
             tagsAreAdded = true
         }
     }
 
-    private fun addTag(tag: Tag) {
+    private fun addTag(tag: Tag, allowRemoveTag: Boolean = false) {
         val layoutInflater = LayoutInflater.from(mContext)
         val tagView = layoutInflater.inflate(R.layout.view_for_tag, mRoot, false)
         val tagTextView = tagView.findViewById<TextView>(R.id.tag_text_view)
@@ -327,6 +312,30 @@ class PhotoTag: RelativeLayout {
         tagView.y = tag.y
         mTagList.add(tagView)
         mRoot!!.addView(tagView)
+        if (allowRemoveTag) {
+            addRemoveTagListener(tagView)
+        }
+
+    }
+
+    private fun addRemoveTagListener(tagView: View) {
+        val removeTagImageView = tagView.findViewById<ImageView>(R.id.remove_tag_image_view)
+        removeTagImageView.setOnClickListener {
+            mTagList.remove(tagView)
+            mRoot!!.removeView(tagView)
+        }
+        val tagOnTouchListener = TagOnTouchListener(tagView)
+        tagOnTouchListener.setOnDragActionListener(object : OnDragActionListener {
+            override fun onDragStart(view: View?) {
+                if (canWeAddTags) {
+                    mIsRootIsInTouch = false
+                    removeTagImageView.visibility = VISIBLE
+                }
+            }
+
+            override fun onDragEnd(view: View?) {}
+        })
+        if (canWeAddTags) tagView.setOnTouchListener(tagOnTouchListener)
     }
 
     val tags: ArrayList<Tag>

@@ -87,7 +87,7 @@ class TagPhotoActivity: AppCompatActivity(), UserClickListener, View.OnClickList
                     media.imageUri?.let { it1 -> loadImage(it1) }
                     media.tags?.let { tags ->
                         if (tags.isNotEmpty()) {
-                            photoTag!!.addTagViewFromTags(tags)
+                            photoTag!!.addTagViewFromTags(tags, true)
                             /*photoTag!!.addTag(185, 156, "Alex")
                             photoTag!!.addTag(618, 190, "Beeth")
                             photoTag!!.addTag(455, 540, "Backy")
